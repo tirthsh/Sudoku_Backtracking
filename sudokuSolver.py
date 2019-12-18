@@ -1,3 +1,30 @@
+#main method which recursively figures out whether each value can work 
+#uses backtracking algorithm 
+def solveBoard(board):
+    #find the coordinates of the next empty spot so we can place a value there
+    findNextVal = findNextEmptySpace(board)
+    #means we're done, board is filled
+    if not findNextVal:
+        return True
+    else:
+        row, col = findNextVal
+
+    #try out values from 1-9 recurisvely 
+    for i in range(1, 10):
+        #check if by placing i as the value at (row,col), is the board valid
+        if validateBoard(board, i, findNextVal):
+            board[row][col] = i
+            
+            #recurse until solution found
+            #onec board is filled, it will go to base case (no empty values left) and return True
+            if solveBoard(board):
+                return True
+            
+            #if not valid, make it 0 again
+            board[row][col] = 0
+        
+    return False
+
 #this method valdiates the board, in other words whether the new number filled in follows the rules of sudoku
 # 3 cases
 # 1. no same value on the same row
@@ -22,6 +49,8 @@ def validateBoard(board, num, pos):
         for col in range(boxX * 3, boxX * 3 + 3):
             if board[row][col] == num and (row, col) != pos:
                 return False
+    
+    return True
 
 #this method finds the next empty space, in other words the next 0 which needs to be filled in
 #returns a tuple of (row, col) coordinate of the 0 found, returns None if no 0s found (i.e. board is filled)
@@ -68,4 +97,10 @@ if __name__ == "__main__":
       [0,4,9,2,0,6,0,0,7]
     ]
 
+    print("")
+    printBoard(board)
+    solveBoard(board)
+    print("")
+    print(" =======ANSWER======")
+    print("")
     printBoard(board)
